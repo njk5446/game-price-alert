@@ -47,4 +47,8 @@ public class Watchlist {
         this.createdAt = LocalDateTime.now();
     }
 
+    // 목표가 변경 (게임 상세 화면에서 수정)
+    public void changeTargetPrice(Integer newTargetPrice) {
+        this.targetPrice = newTargetPrice;
+    }
 }

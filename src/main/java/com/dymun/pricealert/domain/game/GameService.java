@@ -1,5 +1,6 @@
 package com.dymun.pricealert.domain.game;
 
+import com.dymun.pricealert.domain.watchlist.WatchlistRepository;
 import com.dymun.pricealert.external.itad.ItadClient;
 import com.dymun.pricealert.external.itad.dto.ItadLookupResponse;
 import com.dymun.pricealert.external.itad.dto.ItadSearchResult;
@@ -9,12 +10,14 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
+// 게임(Game) 조회/등록을 담당: 스팀 링크/검색 경로로 games 테이블에 등록하고, 자동완성 검색 결과를 제공
 @Service
 @RequiredArgsConstructor
 public class GameService {
 
     private final GameRepository gameRepository;
     private final ItadClient itadClient;
+    private final WatchlistRepository watchlistRepository;
 
     // 게임 등록(steam 경로): games 테이블에 없으면 ITAD lookup으로 조회 후 저장
     public Game findOrCreateBySteamAppid(Integer steamAppid) {
@@ -66,5 +69,6 @@ public class GameService {
                 .filter(r -> "game".equals(r.getType()))
                 .toList();
     }
+
 
 }
