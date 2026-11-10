@@ -21,7 +21,7 @@ public class Game {
     @Column(nullable = false, unique = true)
     private UUID itadId;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private Integer steamAppid;
 
     @Column(nullable = false)
