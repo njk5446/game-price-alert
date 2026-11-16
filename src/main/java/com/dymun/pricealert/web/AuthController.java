@@ -38,9 +38,7 @@ public class AuthController {
     @PostMapping("/login")
     public void login(@RequestBody LoginRequest req, HttpServletRequest httpRequest) {
         // 이메일+비밀번호로 인증 시도 (틀리면 예외 발생)
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword())
-        );
+        Authentication authentication = userService.login(req.getEmail(), req.getPassword());
 
         // 인증 성공 결과를 SecruityContext에 담음
         SecurityContext context = SecurityContextHolder.createEmptyContext();
