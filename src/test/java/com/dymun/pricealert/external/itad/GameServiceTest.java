@@ -33,21 +33,6 @@ public class GameServiceTest {
     }
 
     @Test
-    void findOrCreateFromSearchResult_테스트() {
-        // 1. 먼저 검색해서 결과를 얻음 (실제 화면에서는 사용자가 드롭다운에서 클릭하는 상황)
-        List<ItadSearchResult> searchResults = itadClient.search("stardew valley");
-        ItadSearchResult selected = searchResults.get(0);  // 첫 번째 결과 선택했다고 가정
-
-        // 2. 그 결과로 등록
-        Game first = gameService.findOrCreateFromSearchResult(selected);
-        Game second = gameService.findOrCreateFromSearchResult(selected);
-
-        System.out.println(first.getId());
-        System.out.println(second.getId());
-        System.out.println(first.getTitle());
-    }
-
-    @Test
     void searchGames_dlc제외하고game만나옴() {
         List<ItadSearchResult> results = gameService.searchGames("stard");
 
