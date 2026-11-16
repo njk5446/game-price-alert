@@ -51,4 +51,15 @@ public class Watchlist {
     public void changeTargetPrice(Integer newTargetPrice) {
         this.targetPrice = newTargetPrice;
     }
+
+    // 목표가 이하로 떨어졌을 때 (알림 발송 시 호출)
+    public void markBelowTarget() {
+        this.isBelowTarget = true;
+    }
+
+    // 다시 목표가 위로 올라갔을 때 (다음 할인 때 재알림 가능하도록 초기화)
+    public void markAboveTarget() {
+        this.isBelowTarget = false;
+    }
+
 }

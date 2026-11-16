@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final UserService userService;
-    private final AuthenticationManager authenticationManager;
 
     @Operation(summary = "회원가입", description = "이메일과 비밀번호로 회원가입합니다.")
     @PostMapping("/signup")
