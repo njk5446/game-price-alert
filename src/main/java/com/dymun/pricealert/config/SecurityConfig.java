@@ -2,8 +2,12 @@ package com.dymun.pricealert.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -31,7 +35,13 @@ public class SecurityConfig {
                 .formLogin(form -> form.disable()) // 기본 로그인 폼 끄기 (React가 화면 담당)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll() // 회원가입/로그인은 누구나
+                        .requestMatchers(
+                                "/api/auth/**",
+                                "/v3/api-docs/**",
+                                "/v3/api-docs.yaml",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll() // 회원가입/로그인은 누구나
                         .anyRequest().authenticated() // 나머지는 로그인 필요
                 );
 
@@ -52,5 +62,19 @@ public class SecurityConfig {
         // 모든 경로(/**)에 config에 설정한 규칙을 적용하도록 등록
         source.registerCorsConfiguration("/**", config);
         return source;
+    }
+
+    // 로그인 인증을 처리하는 관리자(AuthenticationManager) 등록
+    // DB 조회(userDetailsService)와 비밀번호 비교(passwordEncoder)를 통해 인증 수행
+    @Bean
+    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+        // DB 기반 인증 처리 도구 - "이메일로 사용자를 찾고, 비밀번호를 비교"하는 역할
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
+
+        // 비밀번호 비교 시 사용할 암호화 도구 지정
+        provider.setPasswordEncoder(passwordEncoder);
+
+        // provider를 관리하는 매니저 생성 - 이게 실제 AuthenticationManager 역할을 함
+        return new ProviderManager(provider);
     }
 }
