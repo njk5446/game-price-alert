@@ -1,6 +1,7 @@
 package com.dymun.pricealert.domain.watchlist;
 
 import com.dymun.pricealert.domain.game.Game;
+import com.dymun.pricealert.domain.game.GameRepository;
 import com.dymun.pricealert.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,22 +16,24 @@ import java.util.Optional;
 public class WatchlistService {
 
     private final WatchlistRepository watchlistRepository;
+    private final GameRepository gameRepository;
 
     // 찜하기/찜취소 토글: 이미 찜한 상태면 취소, 아니면 목표가와 함께 새로 찜
-    public boolean toggleWatch(User user, Game game, Integer targetPrice) {
+    public boolean toggleWatch(User user, Long gameId, Integer targetPrice) {
+        Game game = gameRepository.findById(gameId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게임을 찾을 수 없습니다"));
+
         Optional<Watchlist> existing = watchlistRepository.findByUserAndGame(user, game);
 
         if (existing.isPresent()) {
-             watchlistRepository.delete(existing.get());
+            watchlistRepository.delete(existing.get());
             return false;
         } else {
-            // 안 찜한 상태 -> 새로 찜
-            Watchlist newWatchList = new Watchlist(user, game, targetPrice);
-            watchlistRepository.save(newWatchList);
+            Watchlist newWatchlist = new Watchlist(user, game, targetPrice);
+            watchlistRepository.save(newWatchlist);
             return true;
         }
     }
-
     // 내 찜 목록 조회
     public List<Watchlist> getMyWatchList(User user) {
         return watchlistRepository.findByUser(user);
