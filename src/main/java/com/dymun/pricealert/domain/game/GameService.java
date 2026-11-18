@@ -1,8 +1,11 @@
 package com.dymun.pricealert.domain.game;
 
 import com.dymun.pricealert.external.itad.ItadClient;
+import com.dymun.pricealert.external.itad.dto.ItadHistoryResult;
 import com.dymun.pricealert.external.itad.dto.ItadLookupResponse;
+import com.dymun.pricealert.external.itad.dto.ItadPriceResult;
 import com.dymun.pricealert.external.itad.dto.ItadSearchResult;
+import com.dymun.pricealert.web.dto.GameDetailResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -81,4 +84,26 @@ public class GameService {
         }
         throw new IllegalArgumentException("올바른 게임 링크가 아닙니다.");
     }
+
+    // 게임 상세조회: 현재가 + 역대 최저가 + 가격 추이를 ITAD에서 가져와서 응답으로 조립
+    public GameDetailResponse getGameDetail(Long gameId) {
+        Game game = gameRepository.findById(gameId)
+                .orElseThrow(() -> new IllegalArgumentException("게임을 찾을 수 없습니다."));
+
+        String itadId = game.getItadId().toString();
+
+        List<ItadPriceResult> priceResults = itadClient.prices(List.of(itadId));
+        List<ItadHistoryResult> historyResults = itadClient.history(itadId);
+
+        ItadPriceResult priceResult = priceResults.get(0); // 상세화면에선 itadId 하나만 가져오니까 첫번째값만 있어서 0으로 가져옴
+
+        return new GameDetailResponse(
+                game.getTitle(),
+                game.getBoxArtUrl(),
+                priceResult.getSteamPrice(),
+                priceResult.getHistoryLow(),
+                historyResults
+        );
+    }
+
 }

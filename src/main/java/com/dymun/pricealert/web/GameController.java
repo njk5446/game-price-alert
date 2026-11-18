@@ -4,6 +4,7 @@ package com.dymun.pricealert.web;
 import com.dymun.pricealert.domain.game.Game;
 import com.dymun.pricealert.domain.game.GameService;
 import com.dymun.pricealert.external.itad.dto.ItadSearchResult;
+import com.dymun.pricealert.web.dto.GameDetailResponse;
 import com.dymun.pricealert.web.dto.SearchResultRegisterRequest;
 import com.dymun.pricealert.web.dto.SteamRegisterRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,6 +44,12 @@ public class GameController {
                 req.getBoxart(),
                 req.getBanner400()
         );
+    }
+
+    @Operation(summary = "게임 상세조회", description = "현재가, 역대 최저가, 가격 추이를 조회")
+    @GetMapping("/{gameId}/detail")
+    public GameDetailResponse getGameDetail(@PathVariable Long gameId) {
+        return gameService.getGameDetail(gameId);
     }
 
 

@@ -1,6 +1,7 @@
 package com.dymun.pricealert.external.itad;
 
 import com.dymun.pricealert.config.ItadProperties;
+import com.dymun.pricealert.external.itad.dto.ItadHistoryResult;
 import com.dymun.pricealert.external.itad.dto.ItadLookupResponse;
 import com.dymun.pricealert.external.itad.dto.ItadPriceResult;
 import com.dymun.pricealert.external.itad.dto.ItadSearchResult;
@@ -82,8 +83,19 @@ public class ItadClient {
         return allResults;
     }
 
-
-
+    // 스팀 가격 이력(최근 3개월) 조회 (게임 상세 화면의 가격 추이 그래프용)
+    public List<ItadHistoryResult> history(String itadId) {
+        return restClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/games/history/v2")
+                        .queryParam("key", itadProperties.getKey())
+                        .queryParam("id", itadId)
+                        .queryParam("country", "KR")
+                        .queryParam("shops", 61)
+                        .build())
+                .retrieve()
+                .body(new ParameterizedTypeReference<List<ItadHistoryResult>>() {});
+    }
 
     // 게임 ID 200개 이하로 이루어진 chunk 하나의 가격을 ITAD 가격 조회 API로 실제 요청
     // 429가 오면 Retry-After만큼 기다렸다가 재시도, MAX_RETRY_COUNT만큼 계속 실패하면 포기하고 예외 발생
