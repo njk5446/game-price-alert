@@ -1,6 +1,7 @@
 package com.dymun.pricealert.external.email;
 
 
+import com.dymun.pricealert.domain.notification.Notifier;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class EmailSender {
+public class EmailNotifier implements Notifier {
     private final JavaMailSender mailSender;
 
     @Value("${spring.mail.username}")
