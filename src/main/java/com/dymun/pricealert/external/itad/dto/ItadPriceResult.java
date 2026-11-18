@@ -74,4 +74,13 @@ public class ItadPriceResult {
         private Integer amountInt; // 통화 최소 단위 정수 (KRW는 amount와 동일, USD는 센트 단위)
         private String currency; // 통화 코드 (KRW, USD 등)
     }
+
+    // deals가 비어있으면(스팀에서 안 팔리는 경우) null, 있으면 그 가격 (shops=61로 요청했으므로 deals엔 스팀만 들어있음)
+    public Integer getSteamPrice() {
+        if (deals.isEmpty()) {
+            return null;
+        }
+        return deals.get(0).getPrice().getAmountInt();
+    }
+
 }

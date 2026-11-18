@@ -53,7 +53,7 @@ public class PriceCheckService {
             }
 
             // 4-2. 그 결과에서 스팀 가격만 꺼내기
-            Integer steamPrice = getSteamPrice(matchedResult);
+            Integer steamPrice = matchedResult.getSteamPrice();
             if (steamPrice == null) {
                 continue; // 스팀 가격이 없으면 건너뜀
             }
@@ -68,16 +68,6 @@ public class PriceCheckService {
         for (ItadPriceResult result : priceResults) {
             if (result.getId().equals(itadId)) {
                 return result;
-            }
-        }
-        return null;
-    }
-
-    // deals 중에서 스팀(shop.id = 61)의 가격만 꺼내는 메서드
-    private Integer getSteamPrice(ItadPriceResult priceResult) {
-        for (ItadPriceResult.Deal deal : priceResult.getDeals()) {
-            if (deal.getShop().getId() == 61) {
-                return deal.getPrice().getAmountInt();
             }
         }
         return null;
