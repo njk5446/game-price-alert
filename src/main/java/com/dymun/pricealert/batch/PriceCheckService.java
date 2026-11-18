@@ -24,7 +24,7 @@ public class PriceCheckService {
     @Transactional
     public void checkPrices() {
         // 1. 전체 찜 목록 가져오기
-        List<Watchlist> allWatchlists = watchlistRepository.findAll();
+        List<Watchlist> allWatchlists = watchlistRepository.findAllWithGameAndUser();
 
         if (allWatchlists.isEmpty()) {
             return;
