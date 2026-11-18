@@ -12,10 +12,10 @@ public class PriceCheckScheduler {
 
     private final PriceCheckService priceCheckService;
 
-//    @Scheduled(cron = "*/10 * * * * *") // 매 10초마다 테스트용으로
-    @Scheduled(cron = "0 0 * * * *") // 매시 정각
+    @Scheduled(cron = "*/10 * * * * *") // 매 10초마다 테스트용으로
+//    @Scheduled(cron = "0 0 * * * *") // 매시 정각
     public void runPriceCheck() {
-//        System.out.println("가격 체크 배치 실행됨 - " + java.time.LocalDateTime.now());
+        System.out.println("가격 체크 배치 실행됨 - " + java.time.LocalDateTime.now());
         priceCheckService.checkPrices();
     }
 }

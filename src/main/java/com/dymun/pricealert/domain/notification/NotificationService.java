@@ -2,6 +2,7 @@ package com.dymun.pricealert.domain.notification;
 
 import com.dymun.pricealert.domain.game.Game;
 import com.dymun.pricealert.domain.user.User;
+import com.dymun.pricealert.external.email.EmailSender;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +12,14 @@ import org.springframework.stereotype.Service;
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
+    private final EmailSender emailSender;
 
     public void saveNotification(User user, Game game, Integer priceAtNotification) {
         Notification notification = new Notification(user, game, priceAtNotification);
         notificationRepository.save(notification);
+
+        String subject = "[가격 알림] " + game.getTitle() + " 목표가 도달";
+        String text = game.getTitle() + "이(가) " + priceAtNotification + "원으로 떨어졌어요. 지금 확인해보세요!";
+        emailSender.send(user.getEmail(), subject, text);
     }
 }
